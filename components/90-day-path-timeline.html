@@ -1,0 +1,253 @@
+<!--
+  THE 90-DAY PATH — timeline
+  Paste this whole block into a GHL "Custom Code" element.
+
+  Matches the live site (ronnidraft.conetwork.ca/career-freedom-catalyst):
+  - Desktop (768px+): a thin line with three dots sits above the three month cards.
+    A wine-coloured line fills from the first dot to the last as you scroll down
+    through the section, and empties again as you scroll back up.
+  - Mobile (under 768px): the line is hidden and the cards stack, like the live site.
+  - The label, heading and cards fade up as they scroll into view (cards one after another).
+  - If a visitor has "reduce motion" turned on, the line simply shows full and nothing animates.
+
+  The block includes the linen section background and padding, so it can sit in a full-width GHL section.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap">
+
+<style>
+  .rl-path {
+    --rl-wine: #682830;
+    --rl-linen: #EBEAE8;
+    --rl-ink: #2F2325;
+    --rl-muted-brown: #6E5850;
+    --rl-light-line: #D9D2CE;
+    background: var(--rl-linen);
+    color: var(--rl-ink);
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .rl-path *, .rl-path *::before, .rl-path *::after { box-sizing: border-box; }
+
+  .rl-path__inner {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .rl-path__eyebrow,
+  .rl-path__month {
+    display: inline-block;
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rl-muted-brown);
+  }
+
+  .rl-path__title {
+    max-width: 672px;
+    margin: 16px 0 0;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--rl-wine);
+  }
+
+  /* Timeline (desktop only) */
+  .rl-path__line {
+    display: none;
+    position: relative;
+    margin-top: 64px;
+  }
+  .rl-path__track,
+  .rl-path__fill {
+    position: absolute;
+    top: 7px;
+    left: 16.6667%;
+    height: 1px;
+  }
+  .rl-path__track {
+    right: 16.6667%;
+    background: var(--rl-light-line);
+  }
+  .rl-path__fill {
+    width: 0;
+    background: var(--rl-wine);
+  }
+  .rl-path__dots {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .rl-path__dot {
+    position: relative;
+    z-index: 1;
+    justify-self: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: var(--rl-wine);
+    box-shadow: 0 0 0 4px var(--rl-linen);
+  }
+
+  /* Cards */
+  .rl-path__cards {
+    display: grid;
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .rl-path__card {
+    height: 100%;
+    padding: 32px;
+    background: #FFFFFF;
+    border: 1px solid var(--rl-light-line);
+    border-radius: 24px;
+  }
+  .rl-path__card-title {
+    margin: 12px 0 0;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.375;
+    letter-spacing: -0.01em;
+    color: var(--rl-wine);
+  }
+  .rl-path__card-body {
+    margin: 12px 0 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--rl-ink);
+  }
+
+  @media (min-width: 640px) {
+    .rl-path__inner { padding-left: 32px; padding-right: 32px; }
+    .rl-path__title { font-size: 44px; }
+  }
+  @media (min-width: 768px) {
+    .rl-path__line { display: block; }
+    .rl-path__cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .rl-path__inner { padding-top: 112px; padding-bottom: 112px; }
+  }
+
+  /* Scroll reveal: fade up 28px over 700ms */
+  .rl-path--ready .rl-path__reveal {
+    transition: opacity 700ms cubic-bezier(0, 0, 0.2, 1), transform 700ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+  }
+  .rl-path--ready .rl-path__reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+</style>
+
+<section class="rl-path" aria-label="The 90-day path">
+  <div class="rl-path__inner">
+    <div class="rl-path__reveal" data-delay="0">
+      <span class="rl-path__eyebrow">THE 90-DAY PATH</span>
+    </div>
+    <div class="rl-path__reveal" data-delay="90">
+      <h2 class="rl-path__title">A 90-day path, an outcome-focused journey</h2>
+    </div>
+
+    <div class="rl-path__line" aria-hidden="true">
+      <div class="rl-path__track"></div>
+      <div class="rl-path__fill"></div>
+      <div class="rl-path__dots">
+        <span class="rl-path__dot"></span>
+        <span class="rl-path__dot"></span>
+        <span class="rl-path__dot"></span>
+      </div>
+    </div>
+
+    <div class="rl-path__cards">
+      <div class="rl-path__reveal" data-delay="0">
+        <div class="rl-path__card">
+          <span class="rl-path__month">MONTH 1</span>
+          <h3 class="rl-path__card-title">Validate</h3>
+          <p class="rl-path__card-body">Define a clear consulting offer and complete three real validation conversations with prospective clients.</p>
+        </div>
+      </div>
+      <div class="rl-path__reveal" data-delay="90">
+        <div class="rl-path__card">
+          <span class="rl-path__month">MONTH 2</span>
+          <h3 class="rl-path__card-title">Formal Offer Sprint</h3>
+          <p class="rl-path__card-body">Build sales skill, set your pricing, and run structured discovery calls.</p>
+        </div>
+      </div>
+      <div class="rl-path__reveal" data-delay="180">
+        <div class="rl-path__card">
+          <span class="rl-path__month">MONTH 3</span>
+          <h3 class="rl-path__card-title">Execution + Proof</h3>
+          <p class="rl-path__card-body">Make three formal offers and debrief each one with structure and precision.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    // Runs for every timeline block on the page.
+    var sections = document.querySelectorAll('.rl-path:not(.rl-path--ready)');
+    if (!sections.length) return;
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    sections.forEach(function (section) {
+      var fill = section.querySelector('.rl-path__fill');
+
+      // Progress line: same maths as the live site. Progress is how far the middle of the
+      // screen has travelled down the section (0 at the section top, 1 at its bottom).
+      // The fill spans the 66.6667% between the first and last dot.
+      if (reduceMotion) {
+        fill.style.width = '66.6667%';
+      } else {
+        var frame = 0;
+        var update = function () {
+          cancelAnimationFrame(frame);
+          frame = requestAnimationFrame(function () {
+            var rect = section.getBoundingClientRect();
+            var progress = (window.innerHeight * 0.5 - rect.top) / rect.height;
+            progress = Math.max(0, Math.min(1, progress));
+            fill.style.width = (66.6667 * progress) + '%';
+          });
+        };
+        update();
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+      }
+
+      // Fade-up reveal
+      if (reduceMotion || !('IntersectionObserver' in window)) return;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+      section.querySelectorAll('.rl-path__reveal').forEach(function (el) {
+        el.style.transitionDelay = (el.getAttribute('data-delay') || 0) + 'ms';
+        observer.observe(el);
+      });
+      section.classList.add('rl-path--ready');
+    });
+  })();
+</script>
