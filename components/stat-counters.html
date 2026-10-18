@@ -1,0 +1,191 @@
+<!--
+  STAT COUNTERS — 90 days / 25 years / 200 hours
+  Paste this whole block into a GHL "Custom Code" element.
+
+  Matches the live site (ronnidraft.conetwork.ca home page):
+  - Each number counts up from 0 over 2 seconds (fast start, gentle finish) once
+    40% of it is on screen. It runs once and doesn't repeat.
+  - Each card fades up 28px as it scrolls into view.
+  - If a visitor has "reduce motion" turned on, or JavaScript is off, the final numbers simply show.
+
+  The live site uses these in two different sections, so this block has two parts:
+    PART A: the large "90 DAYS" card. On the live site it's a white card on a linen (#EBEAE8) section.
+    PART B: the "25 years / 200 hours" pair. On the live site, linen cards on a white section.
+  Delete whichever part you don't need, or paste the block twice and delete one part from each.
+  Set the GHL section background to match (linen behind Part A, white behind Part B).
+
+  To change a number, edit data-to="..." on the .rl-count element (and the number inside it).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap">
+
+<style>
+  .rl-stats {
+    --rl-wine: #682830;
+    --rl-linen: #EBEAE8;
+    --rl-ink: #2F2325;
+    --rl-muted-brown: #6E5850;
+    --rl-light-line: #D9D2CE;
+    color: var(--rl-ink);
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .rl-stats *, .rl-stats *::before, .rl-stats *::after { box-sizing: border-box; }
+
+  .rl-stats__num {
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--rl-wine);
+    font-variant-numeric: lining-nums;
+  }
+
+  /* PART A: large "90 DAYS" card */
+  .rl-stats__big {
+    padding: 40px;
+    text-align: center;
+    background: #FFFFFF;
+    border: 1px solid var(--rl-light-line);
+    border-radius: 28px;
+    box-shadow: 0 8px 30px -12px rgba(47, 35, 37, 0.1);
+  }
+  .rl-stats__big .rl-stats__num { font-size: 96px; }
+  .rl-stats__big-label {
+    margin: 16px 0 0;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rl-muted-brown);
+  }
+
+  /* PART B: "25 years / 200 hours" pair */
+  .rl-stats__pair {
+    display: grid;
+    gap: 16px;
+  }
+  .rl-stats__reveal + .rl-stats__pair { margin-top: 32px; } /* only when both parts are kept */
+  .rl-stats__card {
+    padding: 24px;
+    background: var(--rl-linen);
+    border: 1px solid var(--rl-light-line);
+    border-radius: 24px;
+  }
+  .rl-stats__card .rl-stats__num { font-size: 48px; }
+  .rl-stats__card-label {
+    margin: 12px 0 0;
+    font-size: 15px;
+    line-height: 1.375;
+    color: rgba(47, 35, 37, 0.85);
+  }
+
+  @media (min-width: 640px) {
+    .rl-stats__big { padding: 56px; }
+    .rl-stats__big .rl-stats__num { font-size: 120px; }
+    .rl-stats__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rl-stats__card .rl-stats__num { font-size: 56px; }
+  }
+
+  /* Scroll reveal: fade up 28px over 700ms */
+  .rl-stats--ready .rl-stats__reveal {
+    transition: opacity 700ms cubic-bezier(0, 0, 0.2, 1), transform 700ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+  }
+  .rl-stats--ready .rl-stats__reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+</style>
+
+<div class="rl-stats">
+
+  <!-- ===== PART A: 90 DAYS ===== -->
+  <div class="rl-stats__reveal">
+    <div class="rl-stats__big">
+      <div class="rl-stats__num"><span class="rl-count" data-to="90">90</span></div>
+      <p class="rl-stats__big-label">DAYS</p>
+    </div>
+  </div>
+
+  <!-- ===== PART B: 25 years / 200 hours ===== -->
+  <div class="rl-stats__pair">
+    <div class="rl-stats__reveal" data-delay="0">
+      <div class="rl-stats__card">
+        <div class="rl-stats__num"><span class="rl-count" data-to="25">25</span></div>
+        <p class="rl-stats__card-label">years of corporate leadership</p>
+      </div>
+    </div>
+    <div class="rl-stats__reveal" data-delay="60">
+      <div class="rl-stats__card">
+        <div class="rl-stats__num"><span class="rl-count" data-to="200">200</span></div>
+        <p class="rl-stats__card-label">hours coaching professionals through career transitions</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    // Runs for every stat block on the page, so the snippet can be pasted more than once.
+    var blocks = document.querySelectorAll('.rl-stats:not(.rl-stats--ready)');
+    if (!blocks.length) return;
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) return; // final numbers stay as written
+
+    var DURATION = 2000; // ms, same as the live site
+
+    function countUp(el) {
+      var target = parseInt(el.getAttribute('data-to'), 10) || 0;
+      var start = null;
+      function frame(now) {
+        if (start === null) start = now;
+        var progress = Math.min((now - start) / DURATION, 1);
+        var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        el.textContent = Math.round(eased * target).toLocaleString();
+        if (progress < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    blocks.forEach(function (block) {
+      // Counters: start at 0, run when 40% visible
+      var counterObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            counterObserver.unobserve(entry.target);
+            countUp(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+
+      block.querySelectorAll('.rl-count').forEach(function (el) {
+        el.textContent = '0';
+        counterObserver.observe(el);
+      });
+
+      // Card fade-up: runs when 12% visible
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+      block.querySelectorAll('.rl-stats__reveal').forEach(function (el) {
+        el.style.transitionDelay = (el.getAttribute('data-delay') || 0) + 'ms';
+        revealObserver.observe(el);
+      });
+
+      block.classList.add('rl-stats--ready');
+    });
+  })();
+</script>
