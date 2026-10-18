@@ -1,0 +1,317 @@
+<!--
+  SITE HEADER — logo, navigation, Book a Call, mobile menu
+  Paste this whole block into a GHL "Custom Code" element in the TOP section of each page
+  (or in a global section, so it's shared by every page).
+
+  Matches the live site (ronnidraft.conetwork.ca):
+  - Stays pinned to the top of the screen, with a see-through linen background and blur.
+  - After scrolling 24px it tightens up: less padding, smaller logo (60px → 46px), and a thin
+    bottom border with a soft shadow.
+  - Nav links turn wine on hover and an underline grows from the left. The current page's
+    link stays wine and underlined.
+  - Under 1020px wide, the nav and button are replaced by a round menu button. Tapping it drops
+    down a menu with all six links and a full-width "Book a Call" button.
+
+  GHL difference: the live site uses "sticky" positioning, which doesn't work from inside a GHL
+  Custom Code element. This block uses "fixed" positioning instead, plus an invisible spacer the
+  same height as the header so the page content isn't hidden underneath it.
+  In GHL, give the section holding this block no padding, and don't also turn on GHL's own
+  "sticky" option for it.
+
+  Links use the same paths as the draft (/career-freedom-catalyst, /about, etc.).
+  If your GHL page paths differ, change the hrefs below (in both the desktop and mobile nav).
+
+  Logo: hosted on the draft builder. Upload it to the GHL media library and swap the src
+  below so it keeps working if the draft site is taken down.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap">
+
+<style>
+  .rl-hdr {
+    --rl-wine: #682830;
+    --rl-wine-dark: #511821;
+    --rl-ink: #2F2325;
+    --rl-light-line: #D9D2CE;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(235, 234, 232, 0.9);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    color: var(--rl-ink);
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr *, .rl-hdr *::before, .rl-hdr *::after { box-sizing: border-box; }
+  .rl-hdr.is-scrolled {
+    border-bottom-color: var(--rl-light-line);
+    box-shadow: 0 4px 24px -14px rgba(47, 35, 37, 0.2);
+  }
+
+  .rl-hdr__inner {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr.is-scrolled .rl-hdr__inner { padding-top: 8px; padding-bottom: 8px; }
+
+  .rl-hdr__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .rl-hdr__logo { display: flex; align-items: center; }
+  .rl-hdr__logo img {
+    display: block;
+    width: auto;
+    height: 60px;
+    object-fit: contain;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr.is-scrolled .rl-hdr__logo img { height: 46px; }
+
+  /* Desktop nav */
+  .rl-hdr__nav {
+    display: none;
+    align-items: center;
+    gap: 28px;
+  }
+  .rl-hdr__link {
+    position: relative;
+    padding: 4px 0;
+    text-decoration: none;
+  }
+  .rl-hdr__link-text {
+    font-size: 14px;
+    letter-spacing: 0.025em;
+    color: var(--rl-ink);
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr__link:hover .rl-hdr__link-text,
+  .rl-hdr__link.is-active .rl-hdr__link-text { color: var(--rl-wine); }
+  .rl-hdr__link-line {
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: var(--rl-wine);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr__link:hover .rl-hdr__link-line,
+  .rl-hdr__link.is-active .rl-hdr__link-line { transform: scaleX(1); }
+
+  /* Button (same as the live site's primary button) */
+  .rl-hdr__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    padding: 0 32px;
+    border-radius: 9999px;
+    background: var(--rl-wine);
+    color: #FFFFFF;
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr__btn:hover {
+    background: var(--rl-wine-dark);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(104, 40, 48, 0.45);
+  }
+  .rl-hdr__btn:active { transform: translateY(0); }
+  .rl-hdr__btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #EBEAE8, 0 0 0 4px var(--rl-wine);
+  }
+  .rl-hdr__cta { display: none; }
+
+  /* Menu button (mobile) */
+  .rl-hdr__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--rl-light-line);
+    border-radius: 9999px;
+    background: #FFFFFF;
+    color: var(--rl-ink);
+    cursor: pointer;
+    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr__toggle:hover { border-color: var(--rl-wine); color: var(--rl-wine); }
+  .rl-hdr__toggle svg { width: 20px; height: 20px; }
+  .rl-hdr__icon-close { display: none; }
+  .rl-hdr.is-open .rl-hdr__icon-open { display: none; }
+  .rl-hdr.is-open .rl-hdr__icon-close { display: block; }
+
+  /* Mobile menu panel */
+  .rl-hdr__panel {
+    display: none;
+    padding: 24px;
+    background: rgba(235, 234, 232, 0.98);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rl-light-line);
+  }
+  .rl-hdr.is-open .rl-hdr__panel {
+    display: block;
+    animation: rl-hdr-enter 200ms ease;
+  }
+  @keyframes rl-hdr-enter {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .rl-hdr__mlink {
+    display: block;
+    padding: 14px 0;
+    font-size: 15px;
+    letter-spacing: 0.025em;
+    color: var(--rl-ink);
+    text-decoration: none;
+    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hdr__mlink + .rl-hdr__mlink { border-top: 1px solid var(--rl-light-line); }
+  .rl-hdr__mlink:hover { color: var(--rl-wine); }
+  .rl-hdr__mlink.is-active { font-weight: 500; color: var(--rl-wine); }
+  .rl-hdr__mcta { margin-top: 24px; padding-top: 8px; }
+  .rl-hdr__mcta .rl-hdr__btn { width: 100%; }
+
+  /* Spacer keeps page content below the fixed header */
+  .rl-hdr-spacer { height: 89px; }
+
+  @media (min-width: 640px) {
+    .rl-hdr__inner { padding-left: 32px; padding-right: 32px; }
+  }
+  @media (min-width: 1020px) {
+    .rl-hdr__nav { display: flex; }
+    .rl-hdr__cta { display: block; }
+    .rl-hdr__toggle,
+    .rl-hdr.is-open .rl-hdr__panel { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rl-hdr, .rl-hdr * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="rl-hdr-spacer" aria-hidden="true"></div>
+
+<header class="rl-hdr">
+  <div class="rl-hdr__inner">
+    <div class="rl-hdr__bar">
+      <a class="rl-hdr__logo" href="/" aria-label="Ronni Landeck — Home">
+        <img src="https://vibe.filesafe.space/1791614281676719284/attachments/64980e2c-6484-4edd-b1c8-7ff8876ebd29.png"
+             alt="Ronni Landeck — High-Performance & Leadership Coach">
+      </a>
+
+      <nav class="rl-hdr__nav" aria-label="Main">
+        <a class="rl-hdr__link" href="/"><span class="rl-hdr__link-text">Home</span><span class="rl-hdr__link-line"></span></a>
+        <a class="rl-hdr__link" href="/career-freedom-catalyst"><span class="rl-hdr__link-text">Career Freedom Catalyst</span><span class="rl-hdr__link-line"></span></a>
+        <a class="rl-hdr__link" href="/free-blueprint"><span class="rl-hdr__link-text">Free Blueprint</span><span class="rl-hdr__link-line"></span></a>
+        <a class="rl-hdr__link" href="/about"><span class="rl-hdr__link-text">About</span><span class="rl-hdr__link-line"></span></a>
+        <a class="rl-hdr__link" href="/corporate"><span class="rl-hdr__link-text">Corporate</span><span class="rl-hdr__link-line"></span></a>
+        <a class="rl-hdr__link" href="/contact"><span class="rl-hdr__link-text">Contact</span><span class="rl-hdr__link-line"></span></a>
+      </nav>
+
+      <div class="rl-hdr__cta">
+        <a class="rl-hdr__btn" href="https://ronnilandeck.com/call/" target="_blank" rel="noopener noreferrer">Book a Call</a>
+      </div>
+
+      <button class="rl-hdr__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="rl-hdr-panel">
+        <svg class="rl-hdr__icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+        <svg class="rl-hdr__icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="rl-hdr__panel" id="rl-hdr-panel">
+    <nav aria-label="Mobile">
+      <a class="rl-hdr__mlink" href="/">Home</a>
+      <a class="rl-hdr__mlink" href="/career-freedom-catalyst">Career Freedom Catalyst</a>
+      <a class="rl-hdr__mlink" href="/free-blueprint">Free Blueprint</a>
+      <a class="rl-hdr__mlink" href="/about">About</a>
+      <a class="rl-hdr__mlink" href="/corporate">Corporate</a>
+      <a class="rl-hdr__mlink" href="/contact">Contact</a>
+    </nav>
+    <div class="rl-hdr__mcta">
+      <a class="rl-hdr__btn" href="https://ronnilandeck.com/call/" target="_blank" rel="noopener noreferrer">Book a Call</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  (function () {
+    var header = document.querySelector('.rl-hdr:not(.rl-hdr--ready)');
+    if (!header) return;
+    header.classList.add('rl-hdr--ready');
+
+    var spacer = header.previousElementSibling;
+    var inner = header.querySelector('.rl-hdr__inner');
+    var toggle = header.querySelector('.rl-hdr__toggle');
+
+    // Spacer matches the header's full (unscrolled) height so content never sits underneath it
+    function sizeSpacer() {
+      if (spacer && !header.classList.contains('is-scrolled')) spacer.style.height = inner.offsetHeight + 'px';
+    }
+
+    // Shrink after scrolling 24px, like the live site
+    function onScroll() {
+      header.classList.toggle('is-scrolled', window.scrollY > 24);
+    }
+
+    // Highlight the current page: "/" only on the home page, other links also match sub-pages
+    var path = window.location.pathname.replace(/\/+$/, '') || '/';
+    header.querySelectorAll('.rl-hdr__link, .rl-hdr__mlink').forEach(function (a) {
+      var to = a.getAttribute('href').replace(/\/+$/, '') || '/';
+      var active = to === '/' ? path === '/' : (path === to || path.indexOf(to + '/') === 0);
+      if (active) {
+        a.classList.add('is-active');
+        a.setAttribute('aria-current', 'page');
+      }
+    });
+
+    // Mobile menu
+    function setOpen(open) {
+      header.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    toggle.addEventListener('click', function () { setOpen(!header.classList.contains('is-open')); });
+    header.querySelectorAll('.rl-hdr__panel a').forEach(function (a) {
+      a.addEventListener('click', function () { setOpen(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && header.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
+    });
+
+    sizeSpacer();
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', sizeSpacer);
+    var logo = header.querySelector('.rl-hdr__logo img');
+    if (logo && !logo.complete) logo.addEventListener('load', sizeSpacer);
+  })();
+</script>
