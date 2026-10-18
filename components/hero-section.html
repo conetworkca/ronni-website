@@ -1,0 +1,277 @@
+<!--
+  HOME HERO — "Future-Proof Your Career."
+  Paste this whole block into a GHL "Custom Code" element.
+
+  Matches the live site (ronnidraft.conetwork.ca home page):
+  - Desktop (1024px+): copy on the left, arched photo of Ronni on the right.
+    Smaller screens: copy first, photo underneath (max 420px wide, centred).
+  - The label, heading, text, buttons and photo fade up one after another on page load.
+  - Parallax: the photo drifts gently up/down as you scroll (up to 60px).
+  - The button darkens, lifts and gains a soft shadow on hover.
+  - If a visitor has "reduce motion" turned on, everything simply shows and the photo stays still.
+
+  Links:
+  - "Book Your Consulting Roadmap Call" → https://ronnilandeck.com/call/ (opens in a new tab)
+  - "Download the STEM-to-Consultant Blueprint. →" → /free-blueprint
+    This assumes the GHL page uses the same path. If not, change the href below.
+
+  Image: hosted on the draft builder. Upload it to the GHL media library and swap the src
+  below so it keeps working if the draft site is taken down.
+
+  The block includes the linen section background and padding, so it can sit in a full-width GHL section.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap">
+
+<style>
+  .rl-hero {
+    --rl-wine: #682830;
+    --rl-wine-dark: #511821;
+    --rl-linen: #EBEAE8;
+    --rl-ink: #2F2325;
+    --rl-muted-brown: #6E5850;
+    --rl-light-line: #D9D2CE;
+    background: var(--rl-linen);
+    color: var(--rl-ink);
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .rl-hero *, .rl-hero *::before, .rl-hero *::after { box-sizing: border-box; }
+
+  .rl-hero__inner {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+  .rl-hero__grid {
+    display: grid;
+    gap: 48px;
+  }
+
+  .rl-hero__eyebrow {
+    display: inline-block;
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rl-muted-brown);
+  }
+
+  .rl-hero__title {
+    margin: 20px 0 0;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: var(--rl-wine);
+  }
+
+  .rl-hero__sub {
+    margin: 24px 0 0;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--rl-wine);
+  }
+
+  .rl-hero__body {
+    max-width: 576px;
+    margin: 24px 0 0;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--rl-ink);
+  }
+
+  .rl-hero__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 36px;
+  }
+
+  .rl-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    padding: 0 32px;
+    border-radius: 9999px;
+    background: var(--rl-wine);
+    color: #FFFFFF;
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-hero__btn:hover {
+    background: var(--rl-wine-dark);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(104, 40, 48, 0.45);
+  }
+  .rl-hero__btn:active { transform: translateY(0); }
+  .rl-hero__btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--rl-linen), 0 0 0 4px var(--rl-wine);
+  }
+
+  .rl-hero__alt {
+    margin: 0;
+    font-size: 14px;
+    color: var(--rl-muted-brown);
+  }
+  .rl-hero__alt a {
+    font-weight: 500;
+    color: var(--rl-wine);
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+  .rl-hero__alt a:hover { text-decoration: underline; }
+
+  /* Arched photo */
+  .rl-hero__parallax {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    will-change: transform;
+  }
+  .rl-hero__frame {
+    overflow: hidden;
+    padding: 8px;
+    background: rgba(164, 140, 130, 0.2);
+    border: 1px solid var(--rl-light-line);
+    border-radius: 200px 200px 24px 24px;
+    box-shadow: 0 12px 32px -12px rgba(47, 35, 37, 0.15);
+  }
+  .rl-hero__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center 20%;
+    border-radius: 192px 192px 18px 18px;
+  }
+
+  @media (min-width: 640px) {
+    .rl-hero__inner { padding-left: 32px; padding-right: 32px; }
+    .rl-hero__title { font-size: 64px; }
+    .rl-hero__sub { font-size: 30px; }
+  }
+  @media (min-width: 1024px) {
+    .rl-hero__inner { padding-top: 112px; padding-bottom: 112px; }
+    .rl-hero__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+    }
+    .rl-hero__title { font-size: 72px; }
+  }
+
+  /* Fade-up reveal: 28px over 700ms */
+  .rl-hero--ready .rl-hero__reveal {
+    transition: opacity 700ms cubic-bezier(0, 0, 0.2, 1), transform 700ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+  }
+  .rl-hero--ready .rl-hero__reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+</style>
+
+<section class="rl-hero" aria-label="Introduction">
+  <div class="rl-hero__inner">
+    <div class="rl-hero__grid">
+      <div>
+        <div class="rl-hero__reveal" data-delay="0">
+          <span class="rl-hero__eyebrow">FOR ACCOMPLISHED WOMEN READY FOR WHAT'S NEXT</span>
+        </div>
+        <div class="rl-hero__reveal" data-delay="90">
+          <h1 class="rl-hero__title">Future-Proof Your Career.</h1>
+        </div>
+        <div class="rl-hero__reveal" data-delay="180">
+          <p class="rl-hero__sub">Turn the expertise you've spent a career building into a consulting practice—with a plan, not a leap.</p>
+        </div>
+        <div class="rl-hero__reveal" data-delay="250">
+          <p class="rl-hero__body">Career Freedom Catalyst helps accomplished mid-career women translate corporate expertise into a validated consulting foundation—so freedom becomes a responsible next chapter, not an act of faith.</p>
+        </div>
+        <div class="rl-hero__reveal" data-delay="320">
+          <div class="rl-hero__actions">
+            <a class="rl-hero__btn" href="https://ronnilandeck.com/call/" target="_blank" rel="noopener noreferrer">Book Your Consulting Roadmap Call</a>
+            <p class="rl-hero__alt">Not ready for a call? <a href="/free-blueprint">Download the STEM-to-Consultant Blueprint. →</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rl-hero__reveal" data-delay="160">
+        <div class="rl-hero__parallax">
+          <div class="rl-hero__frame">
+            <img class="rl-hero__img"
+                 src="https://vibe.filesafe.space/1791614281676719284/attachments/2f633b56-555e-47aa-bb26-f03a01e5f0bf.png"
+                 alt="Ronni Landeck — Professional Coach and Founder of Career Freedom Catalyst"
+                 loading="eager" fetchpriority="high">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    // Runs for every hero block on the page.
+    var sections = document.querySelectorAll('.rl-hero:not(.rl-hero--ready)');
+    if (!sections.length) return;
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return; // content shows, photo stays still
+
+    sections.forEach(function (section) {
+      // Parallax: same maths as the live site. The photo moves 8% of its distance
+      // from the middle of the screen, capped at 60px either way.
+      var layer = section.querySelector('.rl-hero__parallax');
+      var frame = 0;
+      var update = function () {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(function () {
+          var rect = layer.getBoundingClientRect();
+          var shift = -(rect.top + rect.height / 2 - window.innerHeight / 2) * 0.08;
+          shift = Math.max(-60, Math.min(60, shift));
+          layer.style.transform = 'translate3d(0, ' + shift + 'px, 0)';
+        });
+      };
+      update();
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+
+      // Fade-up reveal
+      if (!('IntersectionObserver' in window)) return;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+      section.querySelectorAll('.rl-hero__reveal').forEach(function (el) {
+        el.style.transitionDelay = (el.getAttribute('data-delay') || 0) + 'ms';
+        observer.observe(el);
+      });
+      section.classList.add('rl-hero--ready');
+    });
+  })();
+</script>
