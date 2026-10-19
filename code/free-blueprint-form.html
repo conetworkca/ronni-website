@@ -1,0 +1,460 @@
+<!--
+  FREE BLUEPRINT FORM — STEM-to-Consultant Blueprint opt-in
+  Paste this whole block into a GHL "Custom Code" element (on the draft it sits in the right-hand
+  column of the Free Blueprint page, next to the "What's inside" copy).
+
+  Matches the live site (ronnidraft.conetwork.ca/free-blueprint):
+  - Card with the blueprint cover placeholder, First name + Email fields and a full-width button.
+  - Checks the fields in the browser when submitted. Errors show under each field in wine and
+    clear as soon as the visitor starts typing in that field.
+  - On success: a toast pops up bottom-right ("Check your inbox — the Blueprint is on its way.")
+    and the card is replaced by the "You're in." message with a Book a Call button.
+  - The card and the line underneath fade up into view.
+
+  ============================== IMPORTANT: CONNECT IT ==============================
+  The draft form doesn't send anything anywhere. This block can send each sign-up to a GHL
+  workflow:
+    1. In GHL: Automation → Workflows → new workflow → trigger "Inbound Webhook". Copy its URL.
+    2. Paste that URL into WEBHOOK_URL in the <script> at the bottom of this block.
+    3. In the workflow, add "Create/Update Contact" (map first_name and email from the
+       webhook data), then a step that emails the Blueprint.
+    4. Submit a test sign-up and check the contact appears in GHL.
+  Until WEBHOOK_URL is filled in, the form still shows the success message but sends nothing
+  (same as the draft), and logs a warning in the browser console.
+  ====================================================================================
+
+  Copy: all text is word for word from the draft, including the [bracketed] placeholders,
+  except one new line that only shows if sending fails: "Something went wrong. Please try again."
+  (the draft has no error case because it never sends).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap">
+
+<style>
+  .rl-bp {
+    --rl-wine: #682830;
+    --rl-wine-dark: #511821;
+    --rl-linen: #EBEAE8;
+    --rl-ink: #2F2325;
+    --rl-muted-brown: #6E5850;
+    --rl-light-line: #D9D2CE;
+    max-width: 490px;
+    margin: 0 auto;
+    color: var(--rl-ink);
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .rl-bp *, .rl-bp *::before, .rl-bp *::after { box-sizing: border-box; }
+
+  .rl-bp__eyebrow {
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rl-muted-brown);
+  }
+
+  .rl-bp__card {
+    margin: 0;
+    padding: 32px;
+    background: #FFFFFF;
+    border: 1px solid var(--rl-light-line);
+    border-radius: 28px;
+    box-shadow: 0 14px 44px -18px rgba(47, 35, 37, 0.22);
+  }
+
+  /* Cover placeholder */
+  .rl-bp__cover {
+    width: 100%;
+    max-width: 150px;
+    aspect-ratio: 3 / 4;
+    margin: 0 auto 32px;
+    padding: 12px;
+    background: rgba(164, 140, 130, 0.3);
+    border: 1px solid var(--rl-light-line);
+    border-radius: 14px;
+    box-shadow: 0 14px 30px -14px rgba(47, 35, 37, 0.32);
+  }
+  .rl-bp__cover-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(217, 210, 206, 0.6);
+    border-radius: 10px;
+  }
+  .rl-bp__cover-label { font-size: 10px; color: var(--rl-wine); }
+  .rl-bp__cover-title {
+    margin: 8px 0 0;
+    padding: 0 8px;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--rl-wine);
+  }
+  .rl-bp__cover-note { margin-top: 8px; font-size: 9px; }
+
+  /* Fields */
+  .rl-bp__fields > * + * { margin-top: 20px; }
+  .rl-bp__label { display: block; }
+  .rl-bp__input {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 20px;
+    background: var(--rl-linen);
+    border: 1px solid var(--rl-light-line);
+    border-radius: 9999px;
+    color: var(--rl-ink);
+    font: inherit;
+    font-size: 15px;
+    line-height: 1.7;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-bp__input::placeholder { color: rgba(47, 35, 37, 0.5); opacity: 1; }
+  .rl-bp__input:focus,
+  .rl-bp__input[aria-invalid="true"] { border-color: var(--rl-wine); }
+  .rl-bp__error {
+    margin: 8px 0 0;
+    padding-left: 8px;
+    font-size: 13px;
+    line-height: 1.375;
+    color: var(--rl-wine);
+  }
+  .rl-bp__error[hidden] { display: none; }
+
+  /* Buttons (same as the live site's primary and outline buttons) */
+  .rl-bp__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 52px;
+    padding: 0 32px;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .rl-bp__btn:active { transform: translateY(0); }
+  .rl-bp__btn:focus-visible { outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px var(--rl-wine); }
+  .rl-bp__btn--primary { background: var(--rl-wine); color: #FFFFFF; }
+  .rl-bp__btn--primary:hover {
+    background: var(--rl-wine-dark);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(104, 40, 48, 0.45);
+  }
+  .rl-bp__btn--primary:disabled { opacity: 0.7; cursor: default; transform: none; box-shadow: none; }
+  .rl-bp__btn--outline { background: transparent; border-color: var(--rl-wine); color: var(--rl-wine); }
+  .rl-bp__btn--outline:hover {
+    background: var(--rl-wine);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(104, 40, 48, 0.25);
+  }
+
+  .rl-bp__privacy {
+    margin: 20px 0 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--rl-muted-brown);
+  }
+
+  /* Success state */
+  .rl-bp__success { text-align: center; }
+  .rl-bp__success[hidden], .rl-bp__form[hidden] { display: none; }
+  .rl-bp__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    border-radius: 9999px;
+    background: var(--rl-linen);
+    color: var(--rl-wine);
+  }
+  .rl-bp__check svg { width: 28px; height: 28px; }
+  .rl-bp__success-title {
+    margin: 24px 0 0;
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--rl-wine);
+  }
+  .rl-bp__success-text {
+    max-width: 320px;
+    margin: 16px auto 0;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--rl-ink);
+  }
+  .rl-bp__success-cta { margin-top: 32px; }
+
+  /* Line under the form */
+  .rl-bp__alt {
+    max-width: 448px;
+    margin: 24px auto 0;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--rl-muted-brown);
+  }
+  .rl-bp__alt a {
+    font-weight: 500;
+    color: var(--rl-wine);
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+  .rl-bp__alt a:hover { text-decoration: underline; }
+
+  @media (min-width: 640px) {
+    .rl-bp__card { padding: 40px; }
+    .rl-bp__success-title { font-size: 32px; }
+  }
+
+  /* Fade-up reveal: 28px over 700ms */
+  .rl-bp--ready .rl-bp__reveal {
+    transition: opacity 700ms cubic-bezier(0, 0, 0.2, 1), transform 700ms cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+  }
+  .rl-bp--ready .rl-bp__reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  /* Toast (same look and position as the live site's notification) */
+  .rl-bp-toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 356px;
+    padding: 16px;
+    background: #EBEAE8;
+    border: 1px solid #D9D2CE;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    color: #2F2325;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: transform 400ms, opacity 400ms;
+  }
+  .rl-bp-toast.is-shown { opacity: 1; transform: translateY(0); }
+  .rl-bp-toast__icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-start;
+    width: 16px;
+    height: 16px;
+    margin-left: -3px;
+    margin-right: 4px;
+  }
+  .rl-bp-toast__title { font-weight: 500; line-height: 1.5; }
+  @media (max-width: 600px) {
+    .rl-bp-toast { left: 16px; right: 16px; bottom: 16px; width: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rl-bp *, .rl-bp-toast { transition: none !important; }
+  }
+</style>
+
+<div class="rl-bp">
+  <div class="rl-bp__reveal" data-delay="120">
+    <div class="rl-bp__card">
+
+      <form class="rl-bp__form" novalidate>
+        <div class="rl-bp__cover">
+          <div class="rl-bp__cover-inner">
+            <span class="rl-bp__eyebrow rl-bp__cover-label">FREE GUIDE</span>
+            <h3 class="rl-bp__cover-title">STEM-to-Consultant Blueprint</h3>
+            <span class="rl-bp__eyebrow rl-bp__cover-note">[COVER]</span>
+          </div>
+        </div>
+
+        <div class="rl-bp__fields">
+          <div>
+            <label class="rl-bp__label" for="bp-first-name"><span class="rl-bp__eyebrow">First name</span></label>
+            <input class="rl-bp__input" id="bp-first-name" name="bp-first-name" type="text" autocomplete="given-name" placeholder="[Your first name]" aria-invalid="false">
+            <p class="rl-bp__error" id="bp-first-name-error" hidden></p>
+          </div>
+          <div>
+            <label class="rl-bp__label" for="bp-email"><span class="rl-bp__eyebrow">Email</span></label>
+            <input class="rl-bp__input" id="bp-email" name="bp-email" type="email" autocomplete="email" placeholder="[Your email]" aria-invalid="false">
+            <p class="rl-bp__error" id="bp-email-error" hidden></p>
+          </div>
+          <button class="rl-bp__btn rl-bp__btn--primary" type="submit">Download the Blueprint</button>
+          <p class="rl-bp__error rl-bp__send-error" role="alert" hidden></p>
+        </div>
+
+        <p class="rl-bp__privacy">Your information stays private. No spam — only what's useful.</p>
+      </form>
+
+      <div class="rl-bp__success" hidden>
+        <div class="rl-bp__check">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h2 class="rl-bp__success-title" tabindex="-1">You're in.</h2>
+        <p class="rl-bp__success-text">The STEM-to-Consultant Blueprint is on its way to your inbox. If it doesn't arrive in a few minutes, check your promotions or spam folder.</p>
+        <div class="rl-bp__success-cta">
+          <a class="rl-bp__btn rl-bp__btn--outline" href="https://ronnilandeck.com/call/" target="_blank" rel="noopener noreferrer">Book Your Consulting Roadmap Call</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rl-bp__reveal" data-delay="220">
+    <p class="rl-bp__alt">Prefer to map your offer live? <a href="https://ronnilandeck.com/call/" target="_blank" rel="noopener noreferrer">Book a complimentary consulting roadmap call.</a></p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // ▼▼▼ Paste your GHL Inbound Webhook URL between the quotes ▼▼▼
+    var WEBHOOK_URL = '';
+    // ▲▲▲ ---------------------------------------------------- ▲▲▲
+
+    var root = document.querySelector('.rl-bp:not(.rl-bp--ready)');
+    if (!root) return;
+
+    var form = root.querySelector('.rl-bp__form');
+    var success = root.querySelector('.rl-bp__success');
+    var submit = form.querySelector('button[type="submit"]');
+    var sendError = form.querySelector('.rl-bp__send-error');
+    var fields = {
+      firstName: form.querySelector('#bp-first-name'),
+      email: form.querySelector('#bp-email')
+    };
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // same check as the live site
+
+    function setError(input, message) {
+      var el = document.getElementById(input.id + '-error');
+      el.textContent = message || '';
+      el.hidden = !message;
+      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (message) input.setAttribute('aria-describedby', el.id);
+      else input.removeAttribute('aria-describedby');
+    }
+
+    function validate() {
+      var errors = {};
+      if (!fields.firstName.value.trim()) errors.firstName = 'Please enter your first name.';
+      var email = fields.email.value.trim();
+      if (!email) errors.email = 'Please enter your email.';
+      else if (!EMAIL_RE.test(email)) errors.email = 'Please enter a valid email address.';
+      setError(fields.firstName, errors.firstName);
+      setError(fields.email, errors.email);
+      return Object.keys(errors).length === 0;
+    }
+
+    // Clear a field's error as soon as the visitor types in it
+    Object.keys(fields).forEach(function (key) {
+      fields[key].addEventListener('input', function () {
+        if (fields[key].getAttribute('aria-invalid') === 'true') setError(fields[key], '');
+      });
+    });
+
+    function showToast(message) {
+      var toast = document.createElement('div');
+      toast.className = 'rl-bp-toast';
+      toast.setAttribute('role', 'status');
+      toast.innerHTML =
+        '<span class="rl-bp-toast__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" height="20" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg></span>' +
+        '<span class="rl-bp-toast__title"></span>';
+      toast.querySelector('.rl-bp-toast__title').textContent = message;
+      document.body.appendChild(toast);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { toast.classList.add('is-shown'); });
+      });
+      setTimeout(function () {
+        toast.classList.remove('is-shown');
+        setTimeout(function () { toast.remove(); }, 400);
+      }, 4000);
+    }
+
+    function showSuccess() {
+      form.hidden = true;
+      success.hidden = false;
+      success.querySelector('.rl-bp__success-title').focus({ preventScroll: true });
+      showToast('Check your inbox — the Blueprint is on its way.');
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      sendError.hidden = true;
+      if (!validate()) return;
+
+      if (!WEBHOOK_URL) {
+        console.warn('[Free Blueprint form] WEBHOOK_URL is empty, so this sign-up was not sent anywhere.');
+        showSuccess();
+        return;
+      }
+
+      submit.disabled = true;
+      var data = new URLSearchParams({
+        first_name: fields.firstName.value.trim(),
+        email: fields.email.value.trim(),
+        source: 'Free Blueprint form',
+        page_url: window.location.href
+      });
+      // "no-cors" lets the browser post to GHL's webhook from any domain. The reply can't be
+      // read, so a sign-up counts as sent unless the request itself fails.
+      fetch(WEBHOOK_URL, { method: 'POST', mode: 'no-cors', body: data })
+        .then(showSuccess)
+        .catch(function () {
+          submit.disabled = false;
+          sendError.textContent = 'Something went wrong. Please try again.';
+          sendError.hidden = false;
+        });
+    });
+
+    // Fade-up reveal (card at 120ms, line underneath at 220ms)
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      root.querySelectorAll('.rl-bp__reveal').forEach(function (el) {
+        el.style.transitionDelay = (el.getAttribute('data-delay') || 0) + 'ms';
+        observer.observe(el);
+      });
+    }
+    root.classList.add('rl-bp--ready');
+  })();
+</script>
