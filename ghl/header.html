@@ -1,8 +1,9 @@
 <!-- Site header: logo, 6 nav links, Book a Call, mobile menu. Full markup, nothing loaded from elsewhere.
-     Paste into a GHL Custom Code element in a global section at the very top of every page (section with no padding).
-     Needs ghl/global.css (styles) + ghl/global.js (shrink on scroll, current-page underline, mobile menu).
-     The header is position: sticky; top: 0. Sticky only holds inside its parent, so if it scrolls away in GHL's
-     preview, also turn on the "Sticky" option for this header section in GHL. -->
+     Paste into a GHL Custom Code element in a global section at the top of every page (section padding: none).
+     Needs ghl/global.css + ghl/global.js. On page load, global.js moves this header to the very top of the
+     page body (so GHL's containers can't affect it), pins it with position: fixed, and pads the body by the header's
+     height so the hero isn't hidden. Behaviour copied from the live site: after 24px of scroll the header
+     tightens (logo 60px -> 46px) and gains a bottom border and soft shadow. Leave GHL's own "Sticky" option off. -->
 <header class="rl-hdr">
   <div class="rl-hdr__inner">
     <div class="rl-hdr__bar">

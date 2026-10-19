@@ -11,7 +11,27 @@
   if (!header) return;
   header.classList.add('rl-hdr--ready');
 
+  // GHL wraps custom code in its own containers (width limits, overflow, transforms can all
+  // break a fixed header). Move the header to the very top of <body> so none of them apply.
+  if (header.parentNode !== document.body) document.body.prepend(header);
+  var inner = header.querySelector('.rl-hdr__inner');
   var toggle = header.querySelector('.rl-hdr__toggle');
+
+  // Pad the body by the header's full (unscrolled) height so the hero isn't hidden under it.
+  // Measured with the scrolled state and transitions briefly off, so the value never changes
+  // while scrolling and nothing visibly flickers.
+  function padBody() {
+    var wasScrolled = header.classList.contains('is-scrolled');
+    header.classList.add('rl-hdr--measuring');
+    header.classList.remove('is-scrolled');
+    var border = parseFloat(window.getComputedStyle(header).borderBottomWidth) || 0;
+    var height = Math.ceil(inner.getBoundingClientRect().height + border);
+    if (wasScrolled) header.classList.add('is-scrolled');
+    void header.offsetHeight; // apply the restored state before transitions come back
+    header.classList.remove('rl-hdr--measuring');
+    document.body.style.paddingTop = height + 'px';
+    header.style.setProperty('--rl-hdr-h', height + 'px');
+  }
 
   // Shrink after scrolling 24px, like the live site
   function onScroll() {
@@ -44,8 +64,13 @@
     if (e.key === 'Escape' && header.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
   });
 
+  padBody();
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', padBody);
+  var logo = header.querySelector('.rl-hdr__logo img');
+  if (logo && !logo.complete) logo.addEventListener('load', padBody);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(padBody);
   }
 
   // ========== Home hero (from code/hero-section.html) ==========

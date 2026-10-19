@@ -9,9 +9,11 @@
     --rl-wine-dark: #511821;
     --rl-ink: #2F2325;
     --rl-light-line: #D9D2CE;
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 999;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
     background: rgba(235, 234, 232, 0.9);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
@@ -173,6 +175,10 @@
   .rl-hdr__mcta { margin-top: 24px; padding-top: 8px; }
   .rl-hdr__mcta .rl-hdr__btn { width: 100%; }
 
+  /* global.js measures the header's full height with transitions paused, so nothing flickers */
+  .rl-hdr--measuring, .rl-hdr--measuring * { transition: none !important; }
+  /* The open mobile menu never runs off a short screen: it scrolls inside the header instead */
+  .rl-hdr__panel { max-height: calc(100vh - var(--rl-hdr-h, 89px)); overflow-y: auto; }
 
   @media (min-width: 640px) {
     .rl-hdr__inner { padding-left: 32px; padding-right: 32px; }
@@ -1714,8 +1720,7 @@
 /* ========== Full-width breakout for GHL ==========
    Some GHL rows/columns cap their width. Every top-level section below stretches to the full
    browser width, while its inner container keeps the live site's width (max 1200px, centred).
-   The sticky header (.rl-hdr) is included, so a narrow GHL container can't squeeze it. */
-.rl-hdr,
+   The header (.rl-hdr) isn't listed: it's moved to <body> and fixed at full width. */
 .rl-hero,
 .rl-home,
 .rl-fw,
