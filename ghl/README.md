@@ -22,7 +22,7 @@ Everything in this folder is ready to paste into the GHL website builder. Copy, 
   | about-her-story.png | About 01 Her story photo (also About social image) | https://assets.cdn.filesafe.space/YL4vYOVwDHTOiN7FSHNc/media/6ad57a20cd7225ed37db5c82.png |
 
 - [ ] **Page paths:** create the six pages with exactly these paths, so the menu and buttons link correctly: `/`, `/career-freedom-catalyst`, `/free-blueprint`, `/about`, `/corporate`, `/contact`.
-- [ ] **Header:** paste `header.html` into a Custom Code element in a **global section** at the top of every page. Section padding: none. Don't turn on GHL's sticky option (the header pins itself).
+- [ ] **Header:** paste `header.html` into a Custom Code element in a **global section** at the top of every page. Section padding: none. The header is `position: sticky; top: 0`. Sticky only holds inside its parent, so if it scrolls away in GHL's preview, also turn on GHL's **Sticky** option for the header section.
 - [ ] **Footer:** paste `footer.html` into a Custom Code element in a **global section** at the bottom of every page. Section padding: none.
 - [ ] **Favicon:** there isn't one on the draft yet (see `../seo.md`).
 

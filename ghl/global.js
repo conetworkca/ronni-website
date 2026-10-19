@@ -11,14 +11,7 @@
   if (!header) return;
   header.classList.add('rl-hdr--ready');
 
-  var spacer = header.previousElementSibling;
-  var inner = header.querySelector('.rl-hdr__inner');
   var toggle = header.querySelector('.rl-hdr__toggle');
-
-  // Spacer matches the header's full (unscrolled) height so content never sits underneath it
-  function sizeSpacer() {
-    if (spacer && !header.classList.contains('is-scrolled')) spacer.style.height = inner.offsetHeight + 'px';
-  }
 
   // Shrink after scrolling 24px, like the live site
   function onScroll() {
@@ -51,12 +44,8 @@
     if (e.key === 'Escape' && header.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
   });
 
-  sizeSpacer();
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', sizeSpacer);
-  var logo = header.querySelector('.rl-hdr__logo img');
-  if (logo && !logo.complete) logo.addEventListener('load', sizeSpacer);
   }
 
   // ========== Home hero (from code/hero-section.html) ==========

@@ -9,10 +9,8 @@
     --rl-wine-dark: #511821;
     --rl-ink: #2F2325;
     --rl-light-line: #D9D2CE;
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
     z-index: 999;
     background: rgba(235, 234, 232, 0.9);
     -webkit-backdrop-filter: blur(12px);
@@ -175,8 +173,6 @@
   .rl-hdr__mcta { margin-top: 24px; padding-top: 8px; }
   .rl-hdr__mcta .rl-hdr__btn { width: 100%; }
 
-  /* Spacer keeps page content below the fixed header */
-  .rl-hdr-spacer { height: 89px; }
 
   @media (min-width: 640px) {
     .rl-hdr__inner { padding-left: 32px; padding-right: 32px; }
@@ -1718,7 +1714,8 @@
 /* ========== Full-width breakout for GHL ==========
    Some GHL rows/columns cap their width. Every top-level section below stretches to the full
    browser width, while its inner container keeps the live site's width (max 1200px, centred).
-   The header (.rl-hdr) is left out: it's already full width via position: fixed. */
+   The sticky header (.rl-hdr) is included, so a narrow GHL container can't squeeze it. */
+.rl-hdr,
 .rl-hero,
 .rl-home,
 .rl-fw,
